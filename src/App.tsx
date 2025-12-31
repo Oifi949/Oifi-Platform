@@ -27,19 +27,19 @@ function App() {
     }))
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault()
+  setIsSubmitting(true)
 
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 2000))
+  const message = `Name: ${formData.name}\nEmail: ${formData.email}\nMessage: ${formData.message}`
+  const phoneNumber = "2349071981627"
 
-    alert('Thank you for your message! I\'ll get back to you soon.')
-    setFormData({ name: '', email: '', message: '' })
-    setIsSubmitting(false)
-  }
+  window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, "_blank")
 
-  // Animation variants
+  setIsSubmitting(false)
+}
+
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -91,7 +91,7 @@ function App() {
         <nav className="px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="text-3xl font-bold text-gray-900 cursor-pointer" onClick={() => scrollToSection('home')}>
-              Oifi
+              OifiJo2
             </div>
             <div className="hidden md:flex space-x-8">
               <button onClick={() => scrollToSection('home')} className="text-gray-700 hover:text-blue-600 transition-colors">Home</button>
@@ -287,7 +287,7 @@ function App() {
               >
                 <h4 className="font-semibold text-gray-900 mb-2">Current Role</h4>
                 <p className="text-gray-600">Senior Full Stack Developer</p>
-                <p className="text-sm text-gray-500">Tech Innovations Inc.</p>
+                <p className="text-sm text-gray-500">OWOjo2 Innovations Inc.</p>
               </motion.div>
               <motion.div
                 className="bg-gray-50 p-6 rounded-lg"
@@ -296,7 +296,7 @@ function App() {
                 transition={{ duration: 0.3 }}
               >
                 <h4 className="font-semibold text-gray-900 mb-2">Location</h4>
-                <p className="text-gray-600">San Francisco, CA</p>
+                <p className="text-gray-600">San Francisco, NIG</p>
                 <p className="text-sm text-gray-500">Open to remote opportunities</p>
               </motion.div>
             </motion.div>
@@ -499,7 +499,7 @@ function App() {
               >
                 <div className="relative overflow-hidden">
                   <img src={project.image} alt={project.title} className="w-full h-48 object-cover transition-transform duration-300 hover:scale-110" />
-                  <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-black/30 bg-opacity-0 hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
                     <div className="opacity-0 hover:opacity-100 transition-opacity duration-300 flex space-x-4">
                       <a href={project.github} className="bg-white p-2 rounded-full shadow-lg hover:bg-gray-100 transition-colors">
                         <svg className="w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
@@ -519,7 +519,7 @@ function App() {
                   <p className="text-gray-600 mb-4">{project.description}</p>
                   <div className="flex flex-wrap gap-2 mb-4">
                     {project.technologies.map((tech) => (
-                      <span key={tech} className="bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 text-xs px-3 py-1 rounded-full font-medium">
+                      <span key={tech} className="bg-linear-to-r from-blue-100 to-purple-100 text-blue-800 text-xs px-3 py-1 rounded-full font-medium">
                         {tech}
                       </span>
                     ))}
@@ -558,20 +558,20 @@ function App() {
                   <svg className="w-6 h-6 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                   </svg>
-                  <span className="text-gray-700">john.doe@example.com</span>
+                  <span className="text-gray-700">owolabifeolami@gmail.com</span>
                 </div>
                 <div className="flex items-center">
                   <svg className="w-6 h-6 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
                   </svg>
-                  <span className="text-gray-700">+1 (555) 123-4567</span>
+                  <span className="text-gray-700">+234 907 198 1627</span>
                 </div>
                 <div className="flex items-center">
                   <svg className="w-6 h-6 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                   </svg>
-                  <span className="text-gray-700">San Francisco, CA</span>
+                  <span className="text-gray-700">San Francisco, Nig</span>
                 </div>
               </div>
             </div>
@@ -667,7 +667,7 @@ function App() {
               </a>
             </div>
             <p className="text-gray-400 text-sm">
-              © 2024 Oifi. All rights reserved.
+              © 2026 Oifi. All rights reserved.
             </p>
           </div>
         </div>
