@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import './App.css'
 
@@ -12,6 +12,13 @@ function App() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitMessage, setSubmitMessage] = useState('')
   const [showPopup, setShowPopup] = useState(false)
+  const [popupTimeout, setPopupTimeout] = useState<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (popupTimeout) clearTimeout(popupTimeout)
+    }
+  }, [popupTimeout])
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId)
@@ -47,13 +54,19 @@ const handleSubmit = async (e: React.FormEvent) => {
       setSubmitMessage('Message sent successfully!')
       setFormData({ name: '', email: '', message: '' })
       setShowPopup(true)
+      const timeout = setTimeout(() => setShowPopup(false), 4000)
+      setPopupTimeout(timeout)
     } else {
       setSubmitMessage('Failed to send message. Please try again.')
       setShowPopup(true)
+      const timeout = setTimeout(() => setShowPopup(false), 4000)
+      setPopupTimeout(timeout)
     }
   } catch {
     setSubmitMessage('An error occurred. Please try again.')
     setShowPopup(true)
+    const timeout = setTimeout(() => setShowPopup(false), 4000)
+    setPopupTimeout(timeout)
   }
 
   setIsSubmitting(false)
@@ -182,7 +195,7 @@ const handleSubmit = async (e: React.FormEvent) => {
               Full Stack Developer & UI/UX Designer
             </motion.p>
             <motion.p
-              className="text-xl md:text-2xl text-gray-700 mb-12 max-w-4xl mx-auto leading-relaxed"
+              className="text-xl md:text-2xl text-gray-700 mb-12 mx-auto leading-relaxed"
               variants={itemVariants}
             >
               Crafting exceptional digital experiences with modern technologies.
@@ -337,7 +350,7 @@ const handleSubmit = async (e: React.FormEvent) => {
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">Skills & Technologies</h2>
             <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mb-8"></div>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 mx-auto">
               Technologies I work with to bring ideas to life
             </p>
           </div>
@@ -412,11 +425,11 @@ const handleSubmit = async (e: React.FormEvent) => {
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">Code in Action</h2>
             <div className="w-24 h-1 bg-gradient-to-r from-blue-400 to-purple-400 mx-auto mb-8"></div>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-300 mx-auto">
               A glimpse of my coding style and approach
             </p>
           </div>
-          <div className="max-w-4xl mx-auto">
+          <div className="mx-auto">
             <div className="bg-gray-800 rounded-xl shadow-2xl overflow-hidden border border-gray-700">
               <div className="flex items-center justify-between px-6 py-4 bg-gray-700 border-b border-gray-600">
                 <div className="flex items-center space-x-2">
@@ -663,50 +676,51 @@ const handleSubmit = async (e: React.FormEvent) => {
       <AnimatePresence>
         {showPopup && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-            onClick={() => setShowPopup(false)}
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50"
+            onClick={() => {
+              setShowPopup(false)
+              if (popupTimeout) clearTimeout(popupTimeout)
+            }}
           >
             <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              className={`bg-white rounded-lg shadow-2xl p-8 max-w-md mx-4 ${submitMessage.includes('successfully') ? 'border-l-4 border-green-500' : 'border-l-4 border-red-500'}`}
-              onClick={(e) => e.stopPropagation()}
+              className={`bg-white rounded-lg shadow-2xl p-6 max-w-md mx-4 border-l-4 ${
+                submitMessage.includes('successfully') ? 'border-green-500' : 'border-red-500'
+              } cursor-pointer`}
             >
-              <div className="flex items-center mb-4">
+              <div className="flex items-center">
                 {submitMessage.includes('successfully') ? (
-                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
-                    <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                    <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"></path>
                     </svg>
                   </div>
                 ) : (
-                  <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
-                    <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-3">
+                    <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                   </div>
                 )}
-                <div>
-                  <h3 className={`text-lg font-semibold ${submitMessage.includes('successfully') ? 'text-green-800' : 'text-red-800'}`}>
+                <div className="flex-1">
+                  <p className={`font-semibold ${submitMessage.includes('successfully') ? 'text-green-800' : 'text-red-800'}`}>
                     {submitMessage.includes('successfully') ? 'Success!' : 'Error'}
-                  </h3>
+                  </p>
+                  <p className="text-gray-600 text-sm">{submitMessage}</p>
                 </div>
-              </div>
-              <p className="text-gray-600 mb-6">{submitMessage}</p>
-              <div className="flex justify-end">
                 <button
-                  onClick={() => setShowPopup(false)}
-                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                    submitMessage.includes('successfully')
-                      ? 'bg-green-600 text-white hover:bg-green-700'
-                      : 'bg-red-600 text-white hover:bg-red-700'
-                  }`}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setShowPopup(false)
+                    if (popupTimeout) clearTimeout(popupTimeout)
+                  }}
+                  className="ml-4 text-gray-400 hover:text-gray-600"
                 >
-                  Close
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
                 </button>
               </div>
             </motion.div>
