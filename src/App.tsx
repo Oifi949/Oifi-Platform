@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import './App.css'
 
 function App() {
@@ -10,6 +10,8 @@ function App() {
     message: ''
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitMessage, setSubmitMessage] = useState('')
+  const [showPopup, setShowPopup] = useState(false)
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId)
@@ -30,11 +32,29 @@ function App() {
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault()
   setIsSubmitting(true)
+  setSubmitMessage('')
 
-  const message = `Name: ${formData.name}\nEmail: ${formData.email}\nMessage: ${formData.message}`
-  const phoneNumber = "2349071981627"
+  try {
+    const response = await fetch('http://localhost:3001/send-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    })
 
-  window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, "_blank")
+    if (response.ok) {
+      setSubmitMessage('Message sent successfully!')
+      setFormData({ name: '', email: '', message: '' })
+      setShowPopup(true)
+    } else {
+      setSubmitMessage('Failed to send message. Please try again.')
+      setShowPopup(true)
+    }
+  } catch {
+    setSubmitMessage('An error occurred. Please try again.')
+    setShowPopup(true)
+  }
 
   setIsSubmitting(false)
 }
@@ -638,6 +658,61 @@ const handleSubmit = async (e: React.FormEvent) => {
           </div>
         </div>
       </motion.section>
+
+      {/* Popup Modal */}
+      <AnimatePresence>
+        {showPopup && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            onClick={() => setShowPopup(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              className={`bg-white rounded-lg shadow-2xl p-8 max-w-md mx-4 ${submitMessage.includes('successfully') ? 'border-l-4 border-green-500' : 'border-l-4 border-red-500'}`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center mb-4">
+                {submitMessage.includes('successfully') ? (
+                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
+                    <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"></path>
+                    </svg>
+                  </div>
+                ) : (
+                  <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
+                    <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                  </div>
+                )}
+                <div>
+                  <h3 className={`text-lg font-semibold ${submitMessage.includes('successfully') ? 'text-green-800' : 'text-red-800'}`}>
+                    {submitMessage.includes('successfully') ? 'Success!' : 'Error'}
+                  </h3>
+                </div>
+              </div>
+              <p className="text-gray-600 mb-6">{submitMessage}</p>
+              <div className="flex justify-end">
+                <button
+                  onClick={() => setShowPopup(false)}
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    submitMessage.includes('successfully')
+                      ? 'bg-green-600 text-white hover:bg-green-700'
+                      : 'bg-red-600 text-white hover:bg-red-700'
+                  }`}
+                >
+                  Close
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
