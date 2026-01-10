@@ -23,7 +23,7 @@ app.post("/api/send-email", async (req, res) => {
 
   try {
     const data = await resend.emails.send({
-      from: "onboarding@resend.dev", // safe default sender
+      from: "onboarding@resend.dev",
       to: process.env.YOUR_GMAIL,
       subject: "New Contact Form Message",
       html: `
@@ -32,7 +32,7 @@ app.post("/api/send-email", async (req, res) => {
       <h1 style="margin:0;">📩 New Portfolio Inquiry</h1>
     </div>
     <div style="padding:20px;">
-      <p><strong>Name:</strong> ${name}</p>
+      <p><strong>Name:</strong> ${name}</p> 
       <p><strong>Email:</strong> ${email}</p>
       <p><strong>Message:</strong></p>
       <blockquote style="border-left:4px solid #4F46E5; padding-left:12px; margin:12px 0; color:#444;">
